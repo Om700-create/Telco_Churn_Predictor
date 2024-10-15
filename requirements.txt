@@ -1,0 +1,28 @@
+# Data manipulation and analysis
+pandas
+numpy
+
+# Data visualization
+matplotlib
+seaborn
+
+# Machine learning
+scikit-learn
+imbalanced-learn  # For handling imbalanced datasets
+
+# Model deployment and APIs
+flask  # If you're using Flask for the web application
+gunicorn  # WSGI server for deploying Flask applications
+
+# Additional utilities
+jupyter  # For using Jupyter notebooks
+notebook  # Jupyter notebook server
+
+# Optional libraries
+pytest  # For testing
+joblib  # For saving/loading models
+pydantic  # For data validation
+category_encoders  # For encoding categorical variables
+optuna  # For hyperparameter tuning
+loguru  # For logging
+-e .
