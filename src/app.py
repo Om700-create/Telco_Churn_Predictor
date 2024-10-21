@@ -1,32 +1,46 @@
-# src/app.py
 from flask import Flask, request, jsonify
-import pandas as pd
 import joblib
+import pandas as pd
+
+# Load the saved model (assuming it's a Random Forest model)
+model = joblib.load("best_random__model.pkl")  # Replace with the actual saved model filename
 
 app = Flask(__name__)
 
-# Load the trained model
-model = joblib.load("C:/project/Telco_Churn_Predictor/notebooks/best_random_forest_model.pkl")
-
 @app.route('/predict', methods=['POST'])
 def predict():
-    """Predict the churn based on the input features."""
-    data = request.json
-    df = pd.DataFrame(data)
-    
-    # Preprocess the data
-    # You may need to adjust this based on your preprocessing steps
-    df = df.drop(columns=['unnecessary_columns'], errors='ignore')  # Replace with actual columns to drop
-    df = pd.get_dummies(df, drop_first=True)
+    """
+    API endpoint to receive customer data and predict churn using the saved model.
+    """
+    try:
+        # Get the customer data from the request
+        data = request.get_json()
 
-    # Ensure the features match the training set
-    missing_cols = set(model.feature_names_in_) - set(df.columns)
-    for col in missing_cols:
-        df[col] = 0
-    df = df[model.feature_names_in_]
+        # Check if data is present and in JSON format
+        if not data:
+            return jsonify({'error': 'No data provided in the request'}), 400
 
-    predictions = model.predict(df)
-    return jsonify(predictions.tolist())
+        # Convert the data to a pandas DataFrame
+        df = pd.DataFrame([data])
+
+        # Preprocess the data (e.g., one-hot encoding categorical features) as needed
+        # ... (Your preprocessing logic might go here)
+
+        # Make predictions using the loaded model
+        predictions = model.predict(df)
+        predicted_churn = predictions[0]  # Assuming single prediction
+
+        # Prepare the response
+        response = {
+            'prediction': predicted_churn,
+            'message': "Customer churn predicted successfully!"
+        }
+
+        return jsonify(response)
+
+    except Exception as e:
+        # Handle unexpected errors
+        return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
     app.run(debug=True)
