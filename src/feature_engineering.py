@@ -1,5 +1,9 @@
 import pandas as pd
 from sklearn.preprocessing import RobustScaler
+import logging
+
+# Set up logging for the script
+logging.basicConfig(level=logging.INFO, format='[%(asctime)s]: %(message)s')
 
 def load_processed_data(filepath):
     """
@@ -7,10 +11,10 @@ def load_processed_data(filepath):
     """
     try:
         df = pd.read_csv(filepath)
-        print(f"Processed data loaded successfully from {filepath}")
+        logging.info(f"Processed data loaded successfully from {filepath}")
         return df
     except FileNotFoundError:
-        print(f"File not found at {filepath}. Please check the path.")
+        logging.error(f"File not found at {filepath}. Please check the path.")
         return None
 
 def add_charges_per_month(df):
@@ -19,10 +23,10 @@ def add_charges_per_month(df):
     Handle potential division by zero and missing values in 'TotalCharges'.
     """
     df['TotalCharges'] = pd.to_numeric(df['TotalCharges'], errors='coerce')
-    df['TotalCharges'].fillna(df['TotalCharges'].median(), inplace=False)  # Replace NaNs with median (avoid inplace)
+    df['TotalCharges'].fillna(df['TotalCharges'].median(), inplace=True)  # Replace NaNs with median
     df['Charges_per_Month'] = df['TotalCharges'] / df['tenure']
-    df['Charges_per_Month'].fillna(0, inplace=False)  # Handle NaNs resulting from division by zero (avoid inplace)
-    print("Feature 'Charges_per_Month' created.")
+    df['Charges_per_Month'].fillna(0, inplace=True)  # Handle NaNs resulting from division by zero
+    logging.info("Feature 'Charges_per_Month' created.")
     return df
 
 def feature_scaling(df, numerical_features):
@@ -30,21 +34,25 @@ def feature_scaling(df, numerical_features):
     Scale the numerical features using RobustScaler to handle potential outliers.
     """
     scaler = RobustScaler()
+    df[numerical_features] = df[numerical_features].replace([float('inf'), -float('inf')], pd.NA)  # Replace infinity with NaN
+    for feature in numerical_features:
+        df[feature].fillna(df[feature].median(), inplace=True)  # Fill NaNs with median
     df[numerical_features] = scaler.fit_transform(df[numerical_features])
-    print(f"Scaled numerical features: {numerical_features}")
+    logging.info(f"Scaled numerical features: {numerical_features}")
     return df
 
 def feature_encoding(df, categorical_features):
     """
-    Apply one-hot encoding to categorical features, including Tenure_Category (if it exists).
+    Apply one-hot encoding to categorical features, including Tenure_Category if it exists.
     """
     if 'Tenure_Category' in df.columns:
         df_encoded = pd.get_dummies(df, columns=categorical_features, drop_first=True)
+        logging.info(f"Encoded categorical features: {categorical_features}")
     else:
-        print("'Tenure_Category' column not found. Skipping encoding for this feature.")
-        df_encoded = pd.get_dummies(df, columns=categorical_features[:-1], drop_first=True)  # Exclude Tenure_Category
-
-    print(f"Encoded categorical features: {categorical_features if 'Tenure_Category' in df.columns else categorical_features[:-1]}")
+        logging.warning("'Tenure_Category' column not found. Skipping encoding for this feature.")
+        df_encoded = pd.get_dummies(df, columns=categorical_features[:-1], drop_first=True)
+        logging.info(f"Encoded categorical features (excluding 'Tenure_Category'): {categorical_features[:-1]}")
+    
     return df_encoded
 
 def perform_feature_engineering(processed_data_path, final_data_path):
@@ -68,7 +76,7 @@ def perform_feature_engineering(processed_data_path, final_data_path):
 
     # Save the final engineered dataset
     df.to_csv(final_data_path, index=False)
-    print(f"Feature engineered data saved to {final_data_path}")
+    logging.info(f"Feature engineered data saved to {final_data_path}")
 
 # File paths
 processed_data_path = "C:/project/Telco_Churn_Predictor/data/processed/telco_customer_churn_processed.csv"
