@@ -18,10 +18,6 @@ list_of_files = [
     "src/model.py",  # Model definition and training
     "src/utils.py",  # Utility functions (e.g., for visualization)
     "src/app.py",  # Main application file
-    "tests/test_data_processing.py",  # Tests for data processing functions
-    "tests/test_feature_engineering.py",  # Tests for feature engineering functions
-    "tests/test_model.py",  # Tests for model training and evaluation
-    "tests/test_utils.py",  # Tests for utility functions
     "requirements.txt",  # List of dependencies for the project
     "setup.py",  # Setup script for packaging the project
     "README.md",  # Project overview and documentation

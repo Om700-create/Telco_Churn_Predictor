@@ -1,53 +1,140 @@
-# Customer Churn Prediction
+# Telco Customer Churn Predictor
+
+This project aims to predict customer churn for a telecommunications company using the Telco Customer Churn dataset from [Kaggle](https://www.kaggle.com/datasets/blastchar/telco-customer-churn). The project implements various machine learning models, such as Logistic Regression, Random Forest, and SVM, and includes model training, hyperparameter tuning, and API deployment.
+
+## Table of Contents
+- [Project Overview](#project-overview)
+- [Installation](#installation)
+- [Dataset](#dataset)
+- [Features](#features)
+- [Usage](#usage)
+- [API](#api)
+- [Model Training](#model-training)
+- [Model Deployment](#model-deployment)
+- [Testing the API](#testing-the-api)
+- [Contact](#contact)
 
 ## Project Overview
+This project focuses on predicting whether a customer will churn based on several customer attributes such as contract type, monthly charges, and tenure. The project includes:
+1. **Data Preprocessing**: Handling missing values and creating additional features.
+2. **Feature Engineering**: Encoding categorical variables and scaling numeric features.
+3. **Model Training**: Training Logistic Regression, Random Forest, and SVM models with hyperparameter tuning.
+4. **Model Deployment**: Serving the model as an API for real-time predictions.
 
-The **Customer Churn Prediction** project aims to leverage machine learning techniques to predict customer churn for a telecommunications company. By analyzing historical customer data, the project seeks to identify key factors influencing churn and provide insights to enhance customer retention strategies. The implementation includes comprehensive data analysis, feature engineering, model training, and deployment.
+## Installation
 
-### Key Features
-- **Data Exploration**: In-depth analysis of customer data to uncover patterns and trends.
-- **Feature Engineering**: Transformation of raw data into meaningful features to improve model accuracy.
-- **Model Training**: Implementation of various machine learning models, including hyperparameter tuning for optimal performance.
-- **Model Evaluation**: Assessment of model effectiveness using relevant metrics and visualizations.
-- **Deployment**: A Flask-based web application that allows real-time interaction with the predictive model.
-- **Result Analysis**: Comprehensive interpretation of model results and visual representation of significant factors contributing to churn.
+1. **Clone the Repository**:
+    ```bash
+    git clone https://github.com/Om700-create/Telco_Churn_Predictor.git
+    cd Telco_Churn_Predictor
+    ```
 
-## Technologies Used
-- **Programming Languages**: Python
-- **Libraries**: 
-  - Pandas
-  - NumPy
-  - Scikit-Learn
-  - Flask
-  - Matplotlib
-  - Seaborn
-- **Development Tools**: Jupyter Notebook, Git
+2. **Create a Virtual Environment**:
+    ```bash
+    python -m venv venv
+    source venv/bin/activate  # On Windows, use `venv\Scripts\activate`
+    ```
 
-## Folder Structure
-Customer_Churn_Prediction/ │ ├── data/ │ ├── telco_customer_churn.csv # Raw dataset │ └── processed/ # Processed data files │ ├── notebooks/ │ ├── 01_data_exploration.ipynb # Exploratory Data Analysis │ ├── 02_feature_engineering.ipynb # Feature engineering process │ ├── 03_model_training.ipynb # Model training and evaluation │ ├── 04_model_deployment.ipynb # Deployment considerations │ └── 05_results_analysis.ipynb # Results interpretation and visualization │ ├── src/ │ ├── init.py # Package initialization │ ├── data_processing.py # Data cleaning and preprocessing functions │ ├── feature_engineering.py # Feature engineering functions │ ├── model.py # Model definition and training │ └── utils.py # Utility functions (e.g., for visualization) │ ├── tests/ │ ├── test_data_processing.py # Tests for data processing functions │ ├── test_feature_engineering.py # Tests for feature engineering functions │ ├── test_model.py # Tests for model training and evaluation │ └── test_utils.py # Tests for utility functions │ ├── requirements.txt # List of dependencies for the project ├── setup.py # Setup script for packaging the project ├── README.md # Project overview and documentation └── LICENSE # License file for the project (e.g., MIT License)
+3. **Install Dependencies**:
+    ```bash
+    pip install -r requirements.txt
+    ```
 
-markdown
-Copy code
+4. **Download the Dataset**:
+    Download the dataset from [Kaggle](https://www.kaggle.com/datasets/blastchar/telco-customer-churn) and place the `Telco-Customer-Churn.csv` file in the `data/` directory:
+    ```
+    data/telco_customer_churn.csv
+    ```
+
+## Dataset
+The dataset contains information about a telecommunications company’s customers, including:
+- **Demographic Information** (gender, SeniorCitizen, Partner, Dependents)
+- **Services Subscribed** (phone service, multiple lines, internet service, online security, etc.)
+- **Account Information** (contract type, payment method, monthly charges, total charges)
+
+The target variable is `Churn`, which indicates whether the customer left within the last month.
+
+## Features
+Key features used in this project:
+- **tenure**: Number of months the customer has stayed with the company.
+- **MonthlyCharges**: The monthly charges the customer incurs.
+- **TotalCharges**: The total amount charged to the customer.
+- **Contract**: Type of contract (Month-to-month, One-year, Two-year).
+- **InternetService**: Type of internet service (DSL, Fiber optic, No).
+- **PaymentMethod**: How the customer pays (Electronic check, Mailed check, etc.).
 
 ## Usage
 
-### Running Jupyter Notebooks
-- Open the `notebooks` directory and run the Jupyter notebooks sequentially to explore the dataset, engineer features, train models, deploy the model, and analyze the results.
+### 1. Data Preprocessing and Feature Engineering
+To preprocess the data and perform feature engineering, run the following command:
+```bash
+python src/data_processing.py
+This script will clean the dataset, handle missing values, and create new features. The processed data will be saved in the data/processed/ folder.
 
-### Flask Application
-- Launch the Flask application located in the `src` directory by executing:
-  ```bash
-  python app.py
-Access the application via your web browser at http://127.0.0.1:5000 to interact with the predictive model.
-Testing
-Execute the following command in the root directory of the project to run the unit tests:
+2. Training the Model
+Train the model using different algorithms and perform hyperparameter tuning:
 
 bash
 Copy code
-python -m unittest discover -s tests
-Contributing
-Contributions are highly encouraged! Please submit a pull request or raise an issue for discussion.
+python src/model.py
+The best model will be saved as best_model.pkl in the root directory.
 
-License
-This project is licensed under the MIT License. See the LICENSE file for more details.
+3. Running the API
+Deploy the model as a Flask API for real-time predictions:
+
+bash
+Copy code
+python src/app.py
+The API will be hosted at http://127.0.0.1:5000.
+
+API
+1. Endpoints
+GET /: Returns a welcome message.
+POST /predict: Accepts customer data as JSON and returns the churn prediction.
+2. Example Input for POST /predict:
+json
+Copy code
+{
+    "tenure": 12,
+    "MonthlyCharges": 70,
+    "TotalCharges": 840,
+    "gender_Male": 1,
+    "Partner_Yes": 1,
+    "Dependents_Yes": 0,
+    "PhoneService_Yes": 1,
+    "MultipleLines_No phone service": 0,
+    "MultipleLines_Yes": 0,
+    "InternetService_Fiber optic": 1,
+    "InternetService_No": 0,
+    "OnlineSecurity_Yes": 0,
+    "TechSupport_Yes": 0,
+    "Charges_per_Month": 70
+}
+3. Example Output:
+json
+Copy code
+{
+    "prediction": 0  # 0 means the customer is not likely to churn; 1 means the customer is likely to churn.
+}
+Model Training
+This project uses Logistic Regression, Random Forest, and SVM for predicting churn. The models are tuned using GridSearchCV to find the best hyperparameters, and the best model is saved for deployment.
+
+Model Deployment
+Once the best model is trained, it is deployed using Flask, which serves predictions via an API. The API accepts JSON input and returns churn predictions based on the customer's data.
+
+Testing the API
+After running the Flask server, you can test the API using the test_prediction.py script:
+
+bash
+Copy code
+python test_prediction.py
+This script sends a POST request to the /predict endpoint with sample customer data and prints the churn prediction.
+
+Contact
+For any questions or issues, feel free to reach out:
+
+GitHub: https://github.com/Om700-create/Telco_Churn_Predictor
+Email: narayanbhandari498@gmail.com
+
+
 
