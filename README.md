@@ -1,11 +1,12 @@
 # Telco Customer Churn Predictor
 
-This project aims to predict customer churn for a telecommunications company using the Telco Customer Churn dataset from [Kaggle](https://www.kaggle.com/datasets/blastchar/telco-customer-churn). The project implements various machine learning models, such as Logistic Regression, Random Forest, and SVM, and includes model training, hyperparameter tuning, and API deployment.
+This project aims to predict customer churn for a telecommunications company using the Telco Customer Churn dataset from [Kaggle](https://www.kaggle.com/datasets/blastchar/telco-customer-churn). The project implements various machine learning models, such as Logistic Regression, Random Forest, and SVM, and includes model training, hyperparameter tuning, and API deployment. Additionally, the project includes a comprehensive **data analysis** phase to uncover insights and patterns in the dataset, which helps in understanding the factors influencing customer churn.
 
 ## Table of Contents
 - [Project Overview](#project-overview)
 - [Installation](#installation)
 - [Dataset](#dataset)
+- [Data Analysis](#data-analysis)
 - [Features](#features)
 - [Usage](#usage)
 - [API](#api)
@@ -16,10 +17,11 @@ This project aims to predict customer churn for a telecommunications company usi
 
 ## Project Overview
 This project focuses on predicting whether a customer will churn based on several customer attributes such as contract type, monthly charges, and tenure. The project includes:
-1. **Data Preprocessing**: Handling missing values and creating additional features.
-2. **Feature Engineering**: Encoding categorical variables and scaling numeric features.
-3. **Model Training**: Training Logistic Regression, Random Forest, and SVM models with hyperparameter tuning.
-4. **Model Deployment**: Serving the model as an API for real-time predictions.
+1. **Data Analysis**: Exploratory data analysis (EDA) to uncover patterns and insights related to customer churn.
+2. **Data Preprocessing**: Handling missing values and creating additional features.
+3. **Feature Engineering**: Encoding categorical variables and scaling numeric features.
+4. **Model Training**: Training Logistic Regression, Random Forest, and SVM models with hyperparameter tuning.
+5. **Model Deployment**: Serving the model as an API for real-time predictions.
 
 ## Installation
 
@@ -54,6 +56,38 @@ The dataset contains information about a telecommunications company’s customer
 
 The target variable is `Churn`, which indicates whether the customer left within the last month.
 
+## Data Analysis
+The **data analysis** phase of this project involved a deep dive into the dataset to uncover patterns and insights related to customer churn. Below are some key findings from the analysis:
+
+1. **Churn Rate**: 
+   - **26.58%** of customers churned, while **73.42%** did not. This indicates an imbalanced dataset, which is common in churn prediction problems.
+
+2. **Demographics and Churn**:
+   - **Senior citizens** have a higher churn rate compared to non-senior citizens.
+   - Customers **without partners** are more likely to churn than those with partners.
+   - **Gender** does not significantly impact churn.
+
+3. **Contract Type**:
+   - **Month-to-month contracts** have the highest churn rate (**42.71%**), while **two-year contracts** have the lowest (**2.85%**).
+   - Longer contract terms significantly reduce churn.
+
+4. **Payment Methods**:
+   - Customers using **electronic checks** have the highest churn rate (**45.29%**), while those using **automatic payment methods** (bank transfer or credit card) have the lowest (**16.73%** and **15.25%** respectively).
+
+5. **Internet Service**:
+   - **Fiber optic users** have the highest churn rate (**41.89%**), while **DSL users** have a much lower churn rate (**19.00%**).
+   - Customers **without internet service** have the lowest churn rate (**7.43%**).
+
+6. **Tenure**:
+   - **New customers (0-12 months)** have the highest churn rate (**47.68%**), while long-term customers (**61+ months**) have the lowest (**6.61%**).
+   - Improving the early customer experience could help reduce churn.
+
+7. **Monthly and Total Charges**:
+   - Churned customers pay **higher average monthly charges ($74.44)** compared to non-churned customers ($61.31).
+   - **Total charges** for churned customers are significantly lower ($1,531.80) compared to retained customers ($2,555.34), indicating the impact of tenure on churn.
+
+These insights were used to guide feature engineering and model training, ensuring that the predictive models are well-informed by real-world data patterns.
+
 ## Features
 Key features used in this project:
 - **tenure**: Number of months the customer has stayed with the company.
@@ -75,7 +109,7 @@ This script will clean the dataset, handle missing values, and create new featur
 Train the model using different algorithms and perform hyperparameter tuning:
 
 bash
-Copy code
+Copy
 python src/model.py
 The best model will be saved as best_model.pkl in the root directory.
 
@@ -83,17 +117,19 @@ The best model will be saved as best_model.pkl in the root directory.
 Deploy the model as a Flask API for real-time predictions:
 
 bash
-Copy code
+Copy
 python src/app.py
 The API will be hosted at http://127.0.0.1:5000.
 
 API
 1. Endpoints
 GET /: Returns a welcome message.
+
 POST /predict: Accepts customer data as JSON and returns the churn prediction.
+
 2. Example Input for POST /predict:
 json
-Copy code
+Copy
 {
     "tenure": 12,
     "MonthlyCharges": 70,
@@ -112,7 +148,7 @@ Copy code
 }
 3. Example Output:
 json
-Copy code
+Copy
 {
     "prediction": 0  # 0 means the customer is not likely to churn; 1 means the customer is likely to churn.
 }
@@ -126,7 +162,7 @@ Testing the API
 After running the Flask server, you can test the API using the test_prediction.py script:
 
 bash
-Copy code
+Copy
 python test_prediction.py
 This script sends a POST request to the /predict endpoint with sample customer data and prints the churn prediction.
 
@@ -134,7 +170,6 @@ Contact
 For any questions or issues, feel free to reach out:
 
 GitHub: https://github.com/Om700-create/Telco_Churn_Predictor
+
 Email: narayanbhandari498@gmail.com
-
-
 
